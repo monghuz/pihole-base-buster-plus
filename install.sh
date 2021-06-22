@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 # install basic packages
 apt-get -y update \
@@ -17,15 +17,15 @@ mkdir -p /etc/stubby \
 if [[ ${TARGETPLATFORM} =~ "arm" ]]
 then 
     cd /tmp \
-    && wget https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-arm.tgz \
+    && curl -O https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-arm.tgz \
     && tar -xvzf ./cloudflared-stable-linux-arm.tgz \
     && cp ./cloudflared /usr/local/bin \
     && rm -f ./cloudflared-stable-linux-arm.tgz \
     && echo "Cloudflared installed for arm due to tag ${TAG}"
 else 
     cd /tmp \
-    && wget https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb \
-    && apt install ./cloudflared-stable-linux-amd64.deb \
+    && curl -O https://bin.equinox.io/c/VdrWdbjqyF/cloudflared-stable-linux-amd64.deb \
+    && dpkg -i ./cloudflared-stable-linux-amd64.deb \
     && rm -f ./cloudflared-stable-linux-amd64.deb \
     && echo "Cloudflared installed for amd64 due to tag ${TAG}"
 fi
@@ -41,3 +41,6 @@ apt-get -y autoremove \
     && apt-get -y autoclean \
     && apt-get -y clean \
     && rm -fr /tmp/* /var/tmp/* /var/lib/apt/lists/*
+    
+# installed version
+cloudflared --version
